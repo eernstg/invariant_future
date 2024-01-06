@@ -2,56 +2,55 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async' as async show Future, FutureOr;
+import 'dart:async';
 
-extension type Future<T>._(async.Future<T> _it) implements async.Future<T> {
-  Future(async.FutureOr<T> computation()) : this._(async.Future(computation));
+extension type SafeFuture<T>._(Future<T> _it) implements Future<T> {
+  SafeFuture(FutureOr<T> computation()) : this._(Future(computation));
 
-  Future.microtask(async.FutureOr<T> computation())
-      : this._(async.Future.microtask(computation));
+  SafeFuture.microtask(FutureOr<T> computation())
+      : this._(Future.microtask(computation));
 
-  Future.sync(async.FutureOr<T> computation())
-      : this._(async.Future.sync(computation));
+  SafeFuture.sync(FutureOr<T> computation()) : this._(Future.sync(computation));
 
-  Future.value([async.FutureOr<T>? value]) : this._(async.Future.value(value));
+  SafeFuture.value([FutureOr<T>? value]) : this._(Future.value(value));
 
-  Future.error(Object error, [StackTrace? stackTrace])
-      : this._(async.Future.error(error, stackTrace));
+  SafeFuture.error(Object error, [StackTrace? stackTrace])
+      : this._(Future.error(error, stackTrace));
 
-  Future.delayed(Duration duration, [async.FutureOr<T> computation()?])
-      : this._(async.Future.delayed(duration, computation));
+  SafeFuture.delayed(Duration duration, [FutureOr<T> computation()?])
+      : this._(Future.delayed(duration, computation));
 
-  static Future<List<T>> wait<T>(
+  static SafeFuture<List<T>> wait<T>(
     Iterable<Future<T>> futures, {
     bool eagerError = false,
     void cleanUp(T successValue)?,
   }) =>
-      Future<List<T>>._(async.Future.wait<T>(futures,
+      SafeFuture<List<T>>._(Future.wait<T>(futures,
           eagerError: eagerError, cleanUp: cleanUp));
 
-  static Future<T> any<T>(Iterable<Future<T>> futures) =>
-      Future<T>._(async.Future.any<T>(futures));
+  static SafeFuture<T> any<T>(Iterable<Future<T>> futures) =>
+      SafeFuture<T>._(Future.any<T>(futures));
 
-  static Future<void> forEach<T>(
+  static SafeFuture<void> forEach<T>(
     Iterable<T> elements,
-    async.FutureOr action(T element),
+    FutureOr action(T element),
   ) =>
-      Future<void>._(async.Future.forEach<T>(elements, action));
+      SafeFuture<void>._(Future.forEach<T>(elements, action));
 
-  static Future<void> doWhile(async.FutureOr<bool> action()) =>
-      Future<void>._(async.Future.doWhile(action));
+  static SafeFuture<void> doWhile(FutureOr<bool> action()) =>
+      SafeFuture<void>._(Future.doWhile(action));
 
-  Future<R> then<R>(async.FutureOr<R> onValue(T value), {Function? onError}) =>
-      Future<R>._(_it.then<R>(onValue, onError: onError));
+  SafeFuture<R> then<R>(FutureOr<R> onValue(T value), {Function? onError}) =>
+      SafeFuture<R>._(_it.then<R>(onValue, onError: onError));
 
-  Future<T> catchError(Function onError, {bool test(Object error)?}) =>
-      Future<T>._(_it.catchError(onError, test: test));
+  SafeFuture<T> catchError(Function onError, {bool test(Object error)?}) =>
+      SafeFuture<T>._(_it.catchError(onError, test: test));
 
-  Future<T> whenComplete(async.FutureOr<void> action()) =>
-      Future<T>._(_it.whenComplete(action));
+  SafeFuture<T> whenComplete(FutureOr<void> action()) =>
+      SafeFuture<T>._(_it.whenComplete(action));
 
   Stream<T> asStream() => _it.asStream();
 
-  Future<T> timeout(Duration timeLimit, {async.FutureOr<T> onTimeout()?}) =>
-      Future<T>._(_it.timeout(timeLimit, onTimeout: onTimeout));
+  SafeFuture<T> timeout(Duration timeLimit, {FutureOr<T> onTimeout()?}) =>
+      SafeFuture<T>._(_it.timeout(timeLimit, onTimeout: onTimeout));
 }

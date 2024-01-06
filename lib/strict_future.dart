@@ -26,30 +26,31 @@ extension type Future<T>._(async.Future<T> _it) implements async.Future<T> {
     bool eagerError = false,
     void cleanUp(T successValue)?,
   }) =>
-      _it.wait<T>(futures, eagerError: eagerError, cleanUp: cleanUp);
+      Future<List<T>>._(async.Future.wait<T>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
-  static Future<T> any<T>(Iterable<Future<T>> futures) => _it.any<T>(futures);
+  static Future<T> any<T>(Iterable<Future<T>> futures) =>
+      Future<T>._(async.Future.any<T>(futures));
 
   static Future<void> forEach<T>(
     Iterable<T> elements,
     async.FutureOr action(T element),
   ) =>
-      _it.forEach<T>(elements, action);
+      Future<void>._(async.Future.forEach<T>(elements, action));
 
   static Future<void> doWhile(async.FutureOr<bool> action()) =>
-      _it.doWhile(action);
+      Future<void>._(async.Future.doWhile(action));
 
   Future<R> then<R>(async.FutureOr<R> onValue(T value), {Function? onError}) =>
-      _it.then<R>(onValue, onError: onError);
+      Future<R>._(_it.then<R>(onValue, onError: onError));
 
   Future<T> catchError(Function onError, {bool test(Object error)?}) =>
-      _it.catchError(onError, test: test);
+      Future<T>._(_it.catchError(onError, test: test));
 
   Future<T> whenComplete(async.FutureOr<void> action()) =>
-      _it.whenComplete(action);
+      Future<T>._(_it.whenComplete(action));
 
   Stream<T> asStream() => _it.asStream();
 
   Future<T> timeout(Duration timeLimit, {async.FutureOr<T> onTimeout()?}) =>
-      _it.timeout(timeLimit, onTimeout: onTimeout);
+      Future<T>._(_it.timeout(timeLimit, onTimeout: onTimeout));
 }

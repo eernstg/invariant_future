@@ -26,7 +26,8 @@ extension type Future<T>._(async.Future<T> _it) implements async.Future<T> {
     bool eagerError = false,
     void cleanUp(T successValue)?,
   }) =>
-      Future<List<T>>._(async.Future.wait<T>(futures, eagerError: eagerError, cleanUp: cleanUp));
+      Future<List<T>>._(async.Future.wait<T>(futures,
+          eagerError: eagerError, cleanUp: cleanUp));
 
   static Future<T> any<T>(Iterable<Future<T>> futures) =>
       Future<T>._(async.Future.any<T>(futures));

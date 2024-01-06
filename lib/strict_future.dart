@@ -4,7 +4,7 @@
 
 import 'dart:async' as async show Future, FutureOr;
 
-extension type Future<T>._(async.Future<T> _it) extends Future<T> {
+extension type Future<T>._(async.Future<T> _it) implements async.Future<T> {
   Future(async.FutureOr<T> computation()) : this._(async.Future(computation));
 
   Future.microtask(async.FutureOr<T> computation())

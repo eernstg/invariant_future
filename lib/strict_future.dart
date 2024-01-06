@@ -5,20 +5,20 @@
 import 'dart:async' as async show Future, FutureOr;
 
 extension type Future<T>._(async.Future<T> _it) extends Future<T> {
-  Future(FutureOr<T> computation()) : this._(async.Future(computation));
+  Future(async.FutureOr<T> computation()) : this._(async.Future(computation));
 
-  Future.microtask(FutureOr<T> computation())
+  Future.microtask(async.FutureOr<T> computation())
       : this._(async.Future.microtask(computation));
 
-  Future.sync(FutureOr<T> computation())
+  Future.sync(async.FutureOr<T> computation())
       : this._(async.Future.sync(computation));
 
-  Future.value([FutureOr<T>? value]) : this._(async.Future.value(value));
+  Future.value([async.FutureOr<T>? value]) : this._(async.Future.value(value));
 
   Future.error(Object error, [StackTrace? stackTrace])
       : this._(async.Future.error(error, stackTrace));
 
-  Future.delayed(Duration duration, [FutureOr<T> computation()?])
+  Future.delayed(Duration duration, [async.FutureOr<T> computation()?])
       : this._(async.Future.delayed(duration, computation));
 
   static Future<List<T>> wait<T>(
@@ -32,22 +32,24 @@ extension type Future<T>._(async.Future<T> _it) extends Future<T> {
 
   static Future<void> forEach<T>(
     Iterable<T> elements,
-    FutureOr action(T element),
+    async.FutureOr action(T element),
   ) =>
       _it.forEach<T>(elements, action);
 
-  static Future<void> doWhile(FutureOr<bool> action()) => _it.doWhile(action);
+  static Future<void> doWhile(async.FutureOr<bool> action()) =>
+      _it.doWhile(action);
 
-  Future<R> then<R>(FutureOr<R> onValue(T value), {Function? onError}) =>
+  Future<R> then<R>(async.FutureOr<R> onValue(T value), {Function? onError}) =>
       _it.then<R>(onValue, onError: onError);
 
   Future<T> catchError(Function onError, {bool test(Object error)?}) =>
       _it.catchError(onError, test: test);
 
-  Future<T> whenComplete(FutureOr<void> action()) => _it.whenComplete(action);
+  Future<T> whenComplete(async.FutureOr<void> action()) =>
+      _it.whenComplete(action);
 
   Stream<T> asStream() => _it.asStream();
 
-  Future<T> timeout(Duration timeLimit, {FutureOr<T> onTimeout()?}) =>
+  Future<T> timeout(Duration timeLimit, {async.FutureOr<T> onTimeout()?}) =>
       _it.timeout(timeLimit, onTimeout: onTimeout);
 }

@@ -1,14 +1,12 @@
-name: strict_future
-description: A sample command-line application.
+name: safe_future
+description: An extension type `SafeFuture` adjusting the API of `Future`.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/eernstg/safe_future
 
 environment:
   sdk: ^3.3.0-197.0.dev
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
 
 dev_dependencies:
   lints: ^3.0.0

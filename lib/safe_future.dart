@@ -28,6 +28,18 @@ extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> _it)
   _SafeFuture.delayed(Duration duration, [FutureOr<X> computation()?])
       : this._(Future.delayed(duration, computation));
 
+  static SafeFuture<X> any<X>(Iterable<Future<X>> futures) =>
+      SafeFuture<X>._(Future.any<X>(futures));
+
+  static SafeFuture<void> doWhile(FutureOr<bool> action()) =>
+      SafeFuture<void>._(Future.doWhile(action));
+
+  static SafeFuture<void> forEach<X>(
+    Iterable<X> elements,
+    FutureOr action(X element),
+  ) =>
+      SafeFuture<void>._(Future.forEach<X>(elements, action));
+
   static SafeFuture<List<X>> wait<X>(
     Iterable<Future<X>> futures, {
     bool eagerError = false,
@@ -36,33 +48,31 @@ extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> _it)
       SafeFuture<List<X>>._(
           Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
-  static SafeFuture<X> any<X>(Iterable<Future<X>> futures) =>
-      SafeFuture<X>._(Future.any<X>(futures));
-
-  static SafeFuture<void> forEach<X>(
-    Iterable<X> elements,
-    FutureOr action(X element),
-  ) =>
-      SafeFuture<void>._(Future.forEach<X>(elements, action));
-
-  static SafeFuture<void> doWhile(FutureOr<bool> action()) =>
-      SafeFuture<void>._(Future.doWhile(action));
-
-  SafeFuture<R> then<R>(FutureOr<R> onValue(X value), {Function? onError}) =>
-      SafeFuture<R>._(_it.then<R>(onValue, onError: onError));
+  Stream<X> asStream() => _it.asStream();
 
   SafeFuture<X> catchError(Function onError, {bool test(Object error)?}) =>
       SafeFuture<X>._(_it.catchError(onError, test: test));
 
-  SafeFuture<X> whenComplete(FutureOr<void> action()) =>
-      SafeFuture<X>._(_it.whenComplete(action));
-
-  Stream<X> asStream() => _it.asStream();
+  SafeFuture<R> then<R>(FutureOr<R> onValue(X value), {Function? onError}) =>
+      SafeFuture<R>._(_it.then<R>(onValue, onError: onError));
 
   SafeFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>
       SafeFuture<X>._(_it.timeout(timeLimit, onTimeout: onTimeout));
+
+  SafeFuture<X> whenComplete(FutureOr<void> action()) =>
+      SafeFuture<X>._(_it.whenComplete(action));
 }
 
 extension SafeFutureExtension<X> on Future<X> {
+  Future<bool> get isInvariant async {
+    var list = await this.asStream().take(0).toList();
+    try {
+      list.addAll(<X>[]);
+    } catch (_) {
+      return false;
+    }
+    return true;
+  }
+
   SafeFuture<X> get safe => SafeFuture<X>._(this);
 }

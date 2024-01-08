@@ -4,20 +4,28 @@
 
 import 'dart:async';
 
-extension type SafeFuture<X>._(Future<X> _it) implements Future<X> {
-  SafeFuture(FutureOr<X> computation()) : this._(Future(computation));
+typedef _Inv<X> = X Function(X);
+typedef SafeFuture<X> = _SafeFuture<X, _Inv<X>>;
 
-  SafeFuture.microtask(FutureOr<X> computation())
+// See https://github.com/dart-lang/sdk/issues/54543:
+// ignore_for_file: unused_element
+
+extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> _it)
+    implements Future<X> {
+  _SafeFuture(FutureOr<X> computation()) : this._(Future(computation));
+
+  _SafeFuture.microtask(FutureOr<X> computation())
       : this._(Future.microtask(computation));
 
-  SafeFuture.sync(FutureOr<X> computation()) : this._(Future.sync(computation));
+  _SafeFuture.sync(FutureOr<X> computation())
+      : this._(Future.sync(computation));
 
-  SafeFuture.value([FutureOr<X>? value]) : this._(Future.value(value));
+  _SafeFuture.value(FutureOr<X> value) : this._(Future.value(value));
 
-  SafeFuture.error(Object error, [StackTrace? stackTrace])
+  _SafeFuture.error(Object error, [StackTrace? stackTrace])
       : this._(Future.error(error, stackTrace));
 
-  SafeFuture.delayed(Duration duration, [FutureOr<X> computation()?])
+  _SafeFuture.delayed(Duration duration, [FutureOr<X> computation()?])
       : this._(Future.delayed(duration, computation));
 
   static SafeFuture<List<X>> wait<X>(
@@ -25,8 +33,8 @@ extension type SafeFuture<X>._(Future<X> _it) implements Future<X> {
     bool eagerError = false,
     void cleanUp(X successValue)?,
   }) =>
-      SafeFuture<List<X>>._(Future.wait<X>(futures,
-          eagerError: eagerError, cleanUp: cleanUp));
+      SafeFuture<List<X>>._(
+          Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
   static SafeFuture<X> any<X>(Iterable<Future<X>> futures) =>
       SafeFuture<X>._(Future.any<X>(futures));

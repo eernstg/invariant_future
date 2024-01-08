@@ -23,7 +23,7 @@ extension type SafeFuture<X>._(Future<X> _it) implements Future<X> {
   static SafeFuture<List<X>> wait<X>(
     Iterable<Future<X>> futures, {
     bool eagerError = false,
-    void cleanUp(T successValue)?,
+    void cleanUp(X successValue)?,
   }) =>
       SafeFuture<List<X>>._(Future.wait<X>(futures,
           eagerError: eagerError, cleanUp: cleanUp));
@@ -33,14 +33,14 @@ extension type SafeFuture<X>._(Future<X> _it) implements Future<X> {
 
   static SafeFuture<void> forEach<X>(
     Iterable<X> elements,
-    FutureOr action(T element),
+    FutureOr action(X element),
   ) =>
       SafeFuture<void>._(Future.forEach<X>(elements, action));
 
   static SafeFuture<void> doWhile(FutureOr<bool> action()) =>
       SafeFuture<void>._(Future.doWhile(action));
 
-  SafeFuture<R> then<R>(FutureOr<R> onValue(T value), {Function? onError}) =>
+  SafeFuture<R> then<R>(FutureOr<R> onValue(X value), {Function? onError}) =>
       SafeFuture<R>._(_it.then<R>(onValue, onError: onError));
 
   SafeFuture<X> catchError(Function onError, {bool test(Object error)?}) =>

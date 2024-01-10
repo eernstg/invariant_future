@@ -10,7 +10,7 @@ typedef SafeFuture<X> = _SafeFuture<X, _Inv<X>>;
 // See https://github.com/dart-lang/sdk/issues/54543:
 // ignore_for_file: unused_element
 
-extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> _it)
+extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
     implements Future<X> {
   _SafeFuture(FutureOr<X> computation()) : this._(Future(computation));
 
@@ -48,19 +48,19 @@ extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> _it)
       SafeFuture<List<X>>._(
           Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
-  Stream<X> asStream() => _it.asStream();
+  Stream<X> asStream() => it.asStream();
 
   SafeFuture<X> catchError(Function onError, {bool test(Object error)?}) =>
-      SafeFuture<X>._(_it.catchError(onError, test: test));
+      SafeFuture<X>._(it.catchError(onError, test: test));
 
   SafeFuture<R> then<R>(FutureOr<R> onValue(X value), {Function? onError}) =>
-      SafeFuture<R>._(_it.then<R>(onValue, onError: onError));
+      SafeFuture<R>._(it.then<R>(onValue, onError: onError));
 
   SafeFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>
-      SafeFuture<X>._(_it.timeout(timeLimit, onTimeout: onTimeout));
+      SafeFuture<X>._(it.timeout(timeLimit, onTimeout: onTimeout));
 
   SafeFuture<X> whenComplete(FutureOr<void> action()) =>
-      SafeFuture<X>._(_it.whenComplete(action));
+      SafeFuture<X>._(it.whenComplete(action));
 }
 
 extension SafeFutureExtension<X> on Future<X> {

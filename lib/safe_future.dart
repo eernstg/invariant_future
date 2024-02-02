@@ -2,69 +2,68 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
-
-typedef _Inv<X> = X Function(X);
-typedef SafeFuture<X> = _SafeFuture<X, _Inv<X>>;
+import 'dart:async' as async;
 
 // See https://github.com/dart-lang/sdk/issues/54543:
 // ignore_for_file: unused_element
 
-extension type _SafeFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
-    implements Future<X> {
-  _SafeFuture(FutureOr<X> computation()) : this._(Future(computation));
+extension type Future<X>._(async.Future<X> it) implements async.Future<X> {
+  Future(async.FutureOr<X> computation()) : this._(async.Future(computation));
 
-  _SafeFuture.microtask(FutureOr<X> computation())
-      : this._(Future.microtask(computation));
+  Future.microtask(async.FutureOr<X> computation())
+      : this._(async.Future.microtask(computation));
 
-  _SafeFuture.sync(FutureOr<X> computation())
-      : this._(Future.sync(computation));
+  Future.sync(async.FutureOr<X> computation())
+      : this._(async.Future.sync(computation));
 
-  _SafeFuture.value(FutureOr<X> value) : this._(Future.value(value));
+  Future.value(async.FutureOr<X> value) : this._(async.Future.value(value));
 
-  _SafeFuture.error(Object error, [StackTrace? stackTrace])
-      : this._(Future.error(error, stackTrace));
+  Future.error(Object error, [StackTrace? stackTrace])
+      : this._(async.Future.error(error, stackTrace));
 
-  _SafeFuture.delayed(Duration duration, [FutureOr<X> computation()?])
-      : this._(Future.delayed(duration, computation));
+  Future.delayed(Duration duration, [async.FutureOr<X> computation()?])
+      : this._(async.Future.delayed(duration, computation));
 
-  static SafeFuture<X> any<X>(Iterable<Future<X>> futures) =>
-      SafeFuture<X>._(Future.any<X>(futures));
+  static Future<X> any<X>(Iterable<async.Future<X>> futures) =>
+      Future<X>._(async.Future.any<X>(futures));
 
-  static SafeFuture<void> doWhile(FutureOr<bool> action()) =>
-      SafeFuture<void>._(Future.doWhile(action));
+  static Future<void> doWhile(async.FutureOr<bool> action()) =>
+      Future<void>._(async.Future.doWhile(action));
 
-  static SafeFuture<void> forEach<X>(
+  static Future<void> forEach<X>(
     Iterable<X> elements,
-    FutureOr action(X element),
+    async.FutureOr action(X element),
   ) =>
-      SafeFuture<void>._(Future.forEach<X>(elements, action));
+      Future<void>._(async.Future.forEach<X>(elements, action));
 
-  static SafeFuture<List<X>> wait<X>(
-    Iterable<Future<X>> futures, {
+  static Future<List<X>> wait<X>(
+    Iterable<async.Future<X>> futures, {
     bool eagerError = false,
     void cleanUp(X successValue)?,
   }) =>
-      SafeFuture<List<X>>._(
-          Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
+      Future<List<X>>._(
+          async.Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
   Stream<X> asStream() => it.asStream();
 
-  SafeFuture<X> catchError(Function onError, {bool test(Object error)?}) =>
-      SafeFuture<X>._(it.catchError(onError, test: test));
+  Future<X> catchError(Function onError, {bool test(Object error)?}) =>
+      Future<X>._(it.catchError(onError, test: test));
 
-  SafeFuture<R> then<R>(FutureOr<R> onValue(X value), {Function? onError}) =>
-      SafeFuture<R>._(it.then<R>(onValue, onError: onError));
+  Future<R> chain<R>(async.Future<R> onValue(X value), {Function? onError}) =>
+      Future<R>._(it.then<R>(onValue, onError: onError));
 
-  SafeFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>
-      SafeFuture<X>._(it.timeout(timeLimit, onTimeout: onTimeout));
+  Future<R> then<R>(R onValue(X value), {Function? onError}) =>
+      Future<R>._(it.then<R>(onValue, onError: onError));
 
-  SafeFuture<X> whenComplete(FutureOr<void> action()) =>
-      SafeFuture<X>._(it.whenComplete(action));
+  Future<X> timeout(Duration timeLimit, {async.FutureOr<X> onTimeout()?}) =>
+      Future<X>._(it.timeout(timeLimit, onTimeout: onTimeout));
+
+  Future<X> whenComplete(async.FutureOr<void> action()) =>
+      Future<X>._(it.whenComplete(action));
 }
 
-extension SafeFutureExtension<X> on Future<X> {
-  Future<bool> get isInvariant async {
+extension FutureExtension<X> on async.Future<X> {
+  async.Future<bool> get isInvariant async {
     var list = await this.asStream().take(0).toList();
     try {
       list.addAll(<X>[]);
@@ -74,5 +73,5 @@ extension SafeFutureExtension<X> on Future<X> {
     return true;
   }
 
-  SafeFuture<X> get safe => SafeFuture<X>._(this);
+  Future<X> get coFuture => Future<X>._(this);
 }

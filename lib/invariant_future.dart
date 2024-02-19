@@ -5,8 +5,8 @@
 import 'dart:async';
 import 'package:extension_type_unions/extension_type_unions.dart';
 
-typedef _Inv<X> = X Function(X);
-typedef IFuture<X> = _IFuture<X, _Inv<X>>;
+typedef _Inv<T> = T Function(T);
+typedef IFuture<T> = _IFuture<T, _Inv<T>>;
 
 // See https://github.com/dart-lang/sdk/issues/54543:
 // ignore_for_file: unused_element
@@ -14,77 +14,75 @@ typedef IFuture<X> = _IFuture<X, _Inv<X>>;
 // Use the same syntax as in the declaration of `Future`.
 // ignore_for_file: use_function_type_syntax_for_parameters
 
-extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
-    implements Future<X> {
-  _IFuture(FutureOr<X> computation()) : this._(Future(computation));
+extension type _IFuture<T, Invariance extends _Inv<T>>._(Future<T> it)
+    implements Future<T> {
+  _IFuture(FutureOr<T> computation()) : this._(Future(computation));
 
-  _IFuture.microtask(FutureOr<X> computation())
+  _IFuture.microtask(FutureOr<T> computation())
       : this._(Future.microtask(computation));
 
-  _IFuture.sync(FutureOr<X> computation()) : this._(Future.sync(computation));
+  _IFuture.sync(FutureOr<T> computation()) : this._(Future.sync(computation));
 
-  _IFuture.value(FutureOr<X> value) : this._(Future.value(value));
+  _IFuture.value(FutureOr<T> value) : this._(Future.value(value));
 
   _IFuture.error(Object error, [StackTrace? stackTrace])
       : this._(Future.error(error, stackTrace));
 
-  _IFuture.delayed(Duration duration, [FutureOr<X> computation()?])
+  _IFuture.delayed(Duration duration, [FutureOr<T> computation()?])
       : this._(Future.delayed(duration, computation));
 
-  static IFuture<X> any<X>(Iterable<Future<X>> futures) =>
-      IFuture<X>._(Future.any<X>(futures));
+  static IFuture<T> any<T>(Iterable<Future<T>> futures) =>
+      IFuture<T>._(Future.any<T>(futures));
 
   static IFuture<void> doWhile(FutureOr<bool> action()) =>
       IFuture<void>._(Future.doWhile(action));
 
-  static IFuture<void> forEach<X>(
-    Iterable<X> elements,
-    FutureOr action(X element),
+  static IFuture<void> forEach<T>(
+    Iterable<T> elements,
+    FutureOr action(T element),
   ) =>
-      IFuture<void>._(Future.forEach<X>(elements, action));
+      IFuture<void>._(Future.forEach<T>(elements, action));
 
-  static IFuture<List<X>> wait<X>(
-    Iterable<Future<X>> futures, {
+  static IFuture<List<T>> wait<T>(
+    Iterable<Future<T>> futures, {
     bool eagerError = false,
-    void cleanUp(X successValue)?,
+    void cleanUp(T successValue)?,
   }) =>
-      IFuture<List<X>>._(
-          Future.wait<X>(futures, eagerError: eagerError, cleanUp: cleanUp));
+      IFuture<List<T>>._(
+          Future.wait<T>(futures, eagerError: eagerError, cleanUp: cleanUp));
 
-  Stream<X> asStream() => it.asStream();
+  Stream<T> asStream() => it.asStream();
 
-  IFuture<X> catchError(
-          Union2<FutureOr<X> Function(Object),
-                  FutureOr<X> Function(Object, StackTrace)>
+  IFuture<T> catchError(
+          Union2<FutureOr<T> Function(Object),
+                  FutureOr<T> Function(Object, StackTrace)>
               onError,
           {bool test(Object error)?}) =>
-      IFuture<X>._(it.catchError(onError as Function, test: test));
+      IFuture<T>._(it.catchError(onError as Function, test: test));
 
-  IFuture<R> then<R>(FutureOr<R> onValue(X value),
+  IFuture<R> then<R>(FutureOr<R> onValue(T value),
           {Union2<FutureOr<R> Function(Object),
                   FutureOr<R> Function(Object, StackTrace)>?
               onError}) =>
       IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
 
-  IFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>
-      IFuture<X>._(it.timeout(timeLimit, onTimeout: onTimeout));
+  IFuture<T> timeout(Duration timeLimit, {FutureOr<T> onTimeout()?}) =>
+      IFuture<T>._(it.timeout(timeLimit, onTimeout: onTimeout));
 
-  IFuture<X> whenComplete(FutureOr<void> action()) =>
-      IFuture<X>._(it.whenComplete(action));
+  IFuture<T> whenComplete(FutureOr<void> action()) =>
+      IFuture<T>._(it.whenComplete(action));
 }
 
-extension IFutureExtension<X> on Future<X> {
-  IFuture<X> get iFuture => IFuture<X>._(this);
+extension IFutureExtension<T> on Future<T> {
+  IFuture<T> get iFuture => IFuture<T>._(this);
 
   Future<bool> get isInvariant async {
     var list = await asStream().take(0).toList();
     try {
-      list.addAll(<X>[]);
+      list.addAll(<T>[]);
     } catch (_) {
       return false;
     }
     return true;
   }
-
-  IFuture<X> get safe => IFuture<X>._(this);
 }

@@ -20,12 +20,19 @@ void main() async {
   {
     // final IFuture<num> fut = IFuture<int>.error("whatever"); // Error.
   }
-
+ 
   // Regular `Future.then` accepts `onError` of type `Function`.
   {
     final Future<num> fut = Future<int>.error("whatever");
     try {
       await fut.then((_) {}, onError: print);
+    } catch (_) {
+      print('`onError` has unusable type!');
+    }
+
+    final fut2 = Future<int>.error("whatever");
+    try {
+      await fut.then((_) {}, onError: (_) => 1.5);
     } catch (_) {
       print('`onError` return value failed run-time type check!');
     }
@@ -34,11 +41,12 @@ void main() async {
   // `IFuture.then` accepts `onError` accepts both safe types.
   {
     final fut = IFuture.error("whatever");
-    await fut.then<int>(
-      (_) => 1,
-      onError: (_) {
-        return 1.5;
-      }.u21,
-    ); // Error.
+    // Compile-time error:
+    //   await fut.then<int>(
+    //     (_) => 1,
+    //     onError: (_) { return 1.5; }.u21,
+    //   );
+    
   }
+
 }

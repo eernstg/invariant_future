@@ -17,8 +17,7 @@ extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
   _IFuture.microtask(FutureOr<X> computation())
       : this._(Future.microtask(computation));
 
-  _IFuture.sync(FutureOr<X> computation())
-      : this._(Future.sync(computation));
+  _IFuture.sync(FutureOr<X> computation()) : this._(Future.sync(computation));
 
   _IFuture.value(FutureOr<X> value) : this._(Future.value(value));
 
@@ -51,12 +50,16 @@ extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
   Stream<X> asStream() => it.asStream();
 
   IFuture<X> catchError(
-    Union2<X Function(Object), X Function(Object, Stacktrace)> onError,
-    {bool test(Object error)?}) =>
+          Union2<FutureOr<X> Function(Object),
+                  FutureOr<X> Function(Object, Stacktrace)>
+              onError,
+          {bool test(Object error)?}) =>
       IFuture<X>._(it.catchError(onError, test: test));
 
   IFuture<R> then<R>(FutureOr<R> onValue(X value),
-    {Union2<R Function(Object), R Function(Object, Stacktrace)>? onError}) =>
+          {Union2<FutureOr<R> Function(Object),
+                  FutureOr<R> Function(Object, Stacktrace)>?
+              onError}) =>
       IFuture<R>._(it.then<R>(onValue, onError: onError));
 
   IFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>

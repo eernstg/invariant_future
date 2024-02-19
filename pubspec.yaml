@@ -1,10 +1,13 @@
-name: safe_future
-description: An extension type `SafeFuture` adjusting the API of `Future`.
+name: invariant_future
+description: >-
+  An extension type `IFuture` adjusting the typing of `Future`.
+  The type parameter is invariant, and some member signatures
+  have more strict static typing than `Future`.
 version: 1.0.0
-repository: https://github.com/eernstg/safe_future
+repository: https://github.com/eernstg/invariant_future
 
 environment:
-  sdk: ^3.3.0-197.0.dev
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
 

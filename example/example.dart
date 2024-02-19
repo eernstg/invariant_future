@@ -47,8 +47,9 @@ void main() async {
 
     num n = await fut.then((n) => n, onError: ((_) => 1.5).u21);
     print('Safe call of `IFuture` returned $n');
+
+    final fut2 = IFuture<num>.error("whatever");
+    n = await fut2.then((n) => n, onError: ((_, __) => 2.5).u22);
+    print('Safe call of `IFuture` with stack trace returned $n');
   }
-
-
-
 }

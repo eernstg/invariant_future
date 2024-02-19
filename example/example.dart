@@ -25,7 +25,7 @@ void main() async {
   {
     final Future<num> fut = Future<int>.error("whatever");
     try {
-      await fut.then((_) {}, onError: print);
+      int i = await fut.then((_) => 1, onError: print);
     } catch (_) {
       print('`onError` has unusable type!');
     }

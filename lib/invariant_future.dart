@@ -70,6 +70,8 @@ extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
 }
 
 extension IFutureExtension<X> on Future<X> {
+  IFuture<X> get iFuture => IFuture<X>._(this);
+
   Future<bool> get isInvariant async {
     var list = await this.asStream().take(0).toList();
     try {

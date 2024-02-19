@@ -3,12 +3,16 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'package:extension_type_unions/extension_type_unions.dart';
 
 typedef _Inv<X> = X Function(X);
 typedef IFuture<X> = _IFuture<X, _Inv<X>>;
 
 // See https://github.com/dart-lang/sdk/issues/54543:
 // ignore_for_file: unused_element
+
+// Use the same syntax as in the declaration of `Future`.
+// ignore_for_file: use_function_type_syntax_for_parameters
 
 extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
     implements Future<X> {
@@ -51,16 +55,16 @@ extension type _IFuture<X, Invariance extends _Inv<X>>._(Future<X> it)
 
   IFuture<X> catchError(
           Union2<FutureOr<X> Function(Object),
-                  FutureOr<X> Function(Object, Stacktrace)>
+                  FutureOr<X> Function(Object, StackTrace)>
               onError,
           {bool test(Object error)?}) =>
-      IFuture<X>._(it.catchError(onError, test: test));
+      IFuture<X>._(it.catchError(onError as Function, test: test));
 
   IFuture<R> then<R>(FutureOr<R> onValue(X value),
           {Union2<FutureOr<R> Function(Object),
-                  FutureOr<R> Function(Object, Stacktrace)>?
+                  FutureOr<R> Function(Object, StackTrace)>?
               onError}) =>
-      IFuture<R>._(it.then<R>(onValue, onError: onError));
+      IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
 
   IFuture<X> timeout(Duration timeLimit, {FutureOr<X> onTimeout()?}) =>
       IFuture<X>._(it.timeout(timeLimit, onTimeout: onTimeout));
@@ -73,7 +77,7 @@ extension IFutureExtension<X> on Future<X> {
   IFuture<X> get iFuture => IFuture<X>._(this);
 
   Future<bool> get isInvariant async {
-    var list = await this.asStream().take(0).toList();
+    var list = await asStream().take(0).toList();
     try {
       list.addAll(<X>[]);
     } catch (_) {

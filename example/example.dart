@@ -40,7 +40,7 @@ Future<void> useFutureThen() async {
 // `IFuture.then` uses an `onError` that accepts both types, safely.
 Future<void> useIFutureThen() async {
   final fut = IFuture<num>.error("This is what the iFuture throws");
-  
+
   // Compile-time error:
   // int i = await fut.then((_) => 1, onError: ((int i) => i + 1).u21);
 

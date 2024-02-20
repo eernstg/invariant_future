@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:extension_type_unions/extension_type_unions.dart';
+export 'package:extension_type_unions/extension_type_unions.dart';
 
 typedef _Inv<T> = T Function(T);
 typedef IFuture<T> = _IFuture<T, _Inv<T>>;

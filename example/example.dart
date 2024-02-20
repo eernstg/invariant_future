@@ -27,18 +27,18 @@ Future<void> example3() async {
     int i = await fut.then((_) => 1, onError: (int i) => i + 1);
   } catch (_) {
     print("`onError` has a type which cannot be used!");
-    fut.ignore();
+    fut.ignore(); // Usage of `onError` failed.
   }
 
   final Future<num> fut2 = Future<int>.error("whatever");
   try {
-    num n = await fut2.then((n) => n, onError: (_) => "Hello!");
+    num n = await fut2.then((_) => 1, onError: (_) => "Hello!");
   } catch (_) {
     print("`onError` return value failed run-time type check!");
   }
 }
 
-// `IFuture.then` uses an `onError` that accepts both safe types.
+// `IFuture.then` uses an `onError` that accepts both types, safely.
 Future<void> example4() async {
   final fut = IFuture<num>.error("This is what the iFuture throws");
   

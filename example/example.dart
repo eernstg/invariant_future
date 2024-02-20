@@ -6,7 +6,7 @@ import 'package:extension_type_unions/extension_type_unions.dart';
 import 'package:invariant_future/invariant_future.dart';
 
 // A regular `Future` uses dynamically checked covariance.
-Future<void> example1() async {
+Future<void> useFutureCatchError() async {
   final Future<num> fut = Future<int>.error("whatever");
   try {
     await fut.catchError((_) => 1.5);
@@ -16,12 +16,12 @@ Future<void> example1() async {
 }
 
 // An invariant `IFuture` rejects covariance at compile time.
-Future<void> example2() async {
+Future<void> useIFutureCatchError() async {
   // final IFuture<num> fut = IFuture<int>.error("whatever"); // Error.
 }
 
 // A regular `Future.then` accepts an `onError` of type `Function`.
-Future<void> example3() async {
+Future<void> useFutureThen() async {
   final fut = Future<int>.error("This is what the future throws");
   try {
     int i = await fut.then((_) => 1, onError: (int i) => i + 1);
@@ -39,7 +39,7 @@ Future<void> example3() async {
 }
 
 // `IFuture.then` uses an `onError` that accepts both types, safely.
-Future<void> example4() async {
+Future<void> useIFutureThen() async {
   final fut = IFuture<num>.error("This is what the iFuture throws");
   
   // Compile-time error:
@@ -59,8 +59,8 @@ Future<void> example4() async {
 }
 
 void main() async {
-  await example1();
-  await example2();
-  await example3();
-  await example4();
+  await useFutureCatchError();
+  await useIFutureCatchError();
+  await useFutureThen();
+  await useIFutureThen();
 }

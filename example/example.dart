@@ -5,51 +5,62 @@
 import 'package:extension_type_unions/extension_type_unions.dart';
 import 'package:invariant_future/invariant_future.dart';
 
+// A regular `Future` uses dynamically checked covariance.
+Future<void> example1() async {
+  final Future<num> fut = Future<int>.error("whatever");
+  try {
+    await fut.catchError((_) => 1.5);
+  } catch (_) {
+    print("The error handler did not return a value of the Future's type!");
+  }
+}
+
+// An invariant `IFuture` rejects covariance at compile time.
+Future<void> example2() async {
+  // final IFuture<num> fut = IFuture<int>.error("whatever"); // Error.
+}
+
+// A regular `Future.then` accepts an `onError` of type `Function`.
+Future<void> example3() async {
+  final fut = Future<int>.error("This is what the future throws");
+  try {
+    int i = await fut.then((_) => 1, onError: (int i) => i + 1);
+  } catch (_) {
+    print("`onError` has a type which cannot be used!");
+    fut.ignore();
+  }
+
+  final Future<num> fut2 = Future<int>.error("whatever");
+  try {
+    num n = await fut2.then((n) => n, onError: (_) => "Hello!");
+  } catch (_) {
+    print("`onError` return value failed run-time type check!");
+  }
+}
+
+// `IFuture.then` uses an `onError` that accepts both safe types.
+Future<void> example4() async {
+  final fut = IFuture<num>.error("This is what the iFuture throws");
+  
+  // Compile-time error:
+  // int i = await fut.then((_) => 1, onError: ((int i) => i + 1).u21);
+
+  // But this is OK:
+  num n = await fut.then((_) => 1, onError: ((_) => 1.5).u21);
+  print("Safe call of `IFuture.then` returned $n");
+
+  // Again a compile-time error:
+  // final IFuture<num> fut2 = IFuture<int>.error("whatever");
+
+  // But this is OK:
+  final fut2 = IFuture<num>.error("whatever");
+  n = await fut2.then((_) => 1, onError: ((_, __) => 2.5).u22);
+  print("Safe call of `IFuture.then` with stack trace returned $n");
+}
+
 void main() async {
-  // Regular `Future` uses dynamically checked covariance.
-  {
-    final Future<num> fut = Future<int>.error("whatever");
-    try {
-      await fut.catchError((_) => 1.5);
-    } catch (_) {
-      print('Return value from function literal failed run-time type check!');
-    }
-  }
-
-  // Invariant `IFuture` rejects covariance at compile time.
-  {
-    // final IFuture<num> fut = IFuture<int>.error("whatever"); // Error.
-  }
- 
-  // Regular `Future.then` accepts `onError` of type `Function`.
-  {
-    final fut = Future<int>.error("This is what the future throws");
-    try {
-      int i = await fut.then((_) => 1, onError: print);
-    } catch (_) {
-      print('`onError` has unusable type!');
-    }
-
-    final Future<num> fut2 = Future<int>.error("whatever");
-    try {
-      num n = await fut2.then((n) => n, onError: (_) => "Hello!");
-    } catch (_) {
-      print('`onError` return value failed run-time type check!');
-    }
-  }
-
-  // `IFuture.then` accepts `onError` accepts both safe types.
-  {
-    final fut = IFuture<num>.error("whatever");
-
-    // Compile-time error:
-    // num n = await fut.then((n) => n, onError: ((_) => "Hello!").u21);
-
-    num n = await fut.then((n) => n, onError: ((_) => 1.5).u21);
-    print('Safe call of `IFuture` returned $n');
-
-    final fut2 = IFuture<num>.error("whatever");
-    n = await fut2.then((n) => n, onError: ((_, __) => 2.5).u22);
-    print('Safe call of `IFuture` with stack trace returned $n');
-  }
+  await example1();
+  await example2();
+  await example3();
+  await example4();
 }

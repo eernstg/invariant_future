@@ -3,8 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'package:extension_type_unions/extension_type_unions.dart';
-export 'package:extension_type_unions/extension_type_unions.dart';
 
 typedef _Inv<T> = T Function(T);
 typedef IFuture<T> = _IFuture<T, _Inv<T>>;
@@ -55,16 +53,21 @@ extension type _IFuture<T, Invariance extends _Inv<T>>._(Future<T> it)
   Stream<T> asStream() => it.asStream();
 
   IFuture<T> catchError(
-          Union2<FutureOr<T> Function(Object),
-                  FutureOr<T> Function(Object, StackTrace)>
-              onError,
+          FutureOr<T> Function(Object) onError,
+          {bool test(Object error)?}) =>
+      IFuture<T>._(it.catchError(onError as Function, test: test));
+
+  IFuture<T> catchErrorWithStack(
+           FutureOr<T> Function(Object, StackTrace) onError,
           {bool test(Object error)?}) =>
       IFuture<T>._(it.catchError(onError as Function, test: test));
 
   IFuture<R> then<R>(FutureOr<R> onValue(T value),
-          {Union2<FutureOr<R> Function(Object),
-                  FutureOr<R> Function(Object, StackTrace)>?
-              onError}) =>
+          {FutureOr<R> Function(Object)? onError}) =>
+      IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
+
+  IFuture<R> then<R>(FutureOr<R> onValue(T value),
+          {FutureOr<R> Function(Object, StackTrace)? onError}) =>
       IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
 
   IFuture<T> timeout(Duration timeLimit, {FutureOr<T> onTimeout()?}) =>

@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:invariant_future/invariant_future.dart';
+import 'package:invariant_future/invariant_future_member.dart';
 
 // A regular `Future` uses dynamically checked covariance.
 Future<void> useFutureCatchError() async {
@@ -37,15 +37,16 @@ Future<void> useFutureThen() async {
   }
 }
 
-// `IFuture.then` uses an `onError` that accepts both types, safely.
+// `IFuture.then` and `IFuture.thenWithStack` use an `onError` which
+// is typed precisely to each of the two supported forms.
 Future<void> useIFutureThen() async {
   final fut = IFuture<num>.error("This is what the iFuture throws");
 
   // Compile-time error:
-  // int i = await fut.then((_) => 1, onError: ((int i) => i + 1).u21);
+  // int i = await fut.then((_) => 1, onError: (int i) => i + 1);
 
   // But this is OK:
-  num n = await fut.then((_) => 1, onError: ((_) => 1.5).u21);
+  num n = await fut.then((_) => 1, onError: (_) => 1.5);
   print("Safe call of `IFuture.then` returned $n");
 
   // Again a compile-time error:
@@ -53,7 +54,7 @@ Future<void> useIFutureThen() async {
 
   // But this is OK:
   final fut2 = IFuture<num>.error("whatever");
-  n = await fut2.then((_) => 1, onError: ((_, __) => 2.5).u22);
+  n = await fut2.thenWithStack((_) => 1, onError: (_, __) => 2.5);
   print("Safe call of `IFuture.then` with stack trace returned $n");
 }
 

@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:invariant_future/invariant_future.dart';
+import 'package:invariant_future/invariant_future_union.dart';
 
 // A regular `Future` uses dynamically checked covariance.
 Future<void> useFutureCatchError() async {

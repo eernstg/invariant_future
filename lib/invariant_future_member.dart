@@ -52,13 +52,12 @@ extension type _IFuture<T, Invariance extends _Inv<T>>._(Future<T> it)
 
   Stream<T> asStream() => it.asStream();
 
-  IFuture<T> catchError(
-          FutureOr<T> Function(Object) onError,
+  IFuture<T> catchError(FutureOr<T> Function(Object) onError,
           {bool test(Object error)?}) =>
       IFuture<T>._(it.catchError(onError as Function, test: test));
 
   IFuture<T> catchErrorWithStack(
-           FutureOr<T> Function(Object, StackTrace) onError,
+          FutureOr<T> Function(Object, StackTrace) onError,
           {bool test(Object error)?}) =>
       IFuture<T>._(it.catchError(onError as Function, test: test));
 
@@ -66,7 +65,7 @@ extension type _IFuture<T, Invariance extends _Inv<T>>._(Future<T> it)
           {FutureOr<R> Function(Object)? onError}) =>
       IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
 
-  IFuture<R> then<R>(FutureOr<R> onValue(T value),
+  IFuture<R> thenWithStack<R>(FutureOr<R> onValue(T value),
           {FutureOr<R> Function(Object, StackTrace)? onError}) =>
       IFuture<R>._(it.then<R>(onValue, onError: onError as Function));
 

@@ -57,7 +57,7 @@ Future<void> useIFutureThen() async {
   print("Safe call of `IFuture.then` with stack trace returned $n");
 }
 
-void main() async {
+Future<void> main() async {
   await useFutureCatchError();
   await useIFutureCatchError();
   await useFutureThen();

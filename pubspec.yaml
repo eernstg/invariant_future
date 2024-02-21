@@ -3,7 +3,7 @@ description: >-
   An extension type `IFuture` adjusting the typing of `Future`.
   The type parameter is invariant, and some member signatures
   have more strict static typing than `Future`.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/eernstg/invariant_future
 
 environment:

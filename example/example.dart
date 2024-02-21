@@ -5,9 +5,9 @@
 import 'union/example.dart' as union show main;
 import 'member/example.dart' as member show main;
 
-void main() {
+void main() async {
   print("--- Try out invariant futures that are union type based.");
-  union.main();
+  await union.main();
   print("\n--- Try out invariant futures that are member based.");
-  member.main();
+  await member.main();
 }

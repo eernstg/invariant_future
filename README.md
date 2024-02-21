@@ -35,7 +35,7 @@ and see what works better.
 The `..._union.dart` approach requires the function arguments to have a
 suffix in order to indicate explicitly which variant of the union type is
 being used for this call. So `myFuture.catchError((x) => e)` would become
-`myFuture.catchError(((e) => e).u21)` to indicate that we're using a
+`myFuture.catchError(((x) => e).u21)` to indicate that we're using a
 function that doesn't accept a stack trace, that is, type number 1 in the
 union type. Similarly, `myFuture.catchError((x, s) => e)` becomes
 `myFuture.catchError(((x, s) => e).u22)`, indicating that we're using the

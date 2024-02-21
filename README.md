@@ -57,11 +57,5 @@ kind of superinterface), and it cannot be used as the return type of a
 function whose body is `async` (because `IFuture<T>` isn't a supertype of
 `Future<Never>`).
 
-In other words, `IFuture` is helpful in that it provides a safer signature
-for several members of `Future`, but it must in general be introduced in
-client code (e.g., as the type of a local variable) because it can't be the
-return type of a typical function that returns a future (because most of
-those have an `async` body).
-
 Finally, an extension getter `iFuture` is provided in order to make it more
 convenient to access a given future using the interface of `IFuture`.

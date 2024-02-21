@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Fix bug in example.
+
 ## 1.0.2
 
 - Reorganize examples such that pub.dev will recognize them.

@@ -55,7 +55,7 @@ Future<void> useIFutureThen() async {
   // But this is OK:
   final fut2 = IFuture<num>.error("whatever");
   n = await fut2.thenWithStack((_) => 1, onError: (_, __) => 2.5);
-  print("Safe call of `IFuture.then` with stack trace returned $n");
+  print("Safe call of `IFuture.thenWithStack` returned $n");
 }
 
 Future<void> main() async {
